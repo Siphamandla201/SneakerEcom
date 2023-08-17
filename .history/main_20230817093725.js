@@ -1,0 +1,1 @@
+fetch('index.php').then(())
