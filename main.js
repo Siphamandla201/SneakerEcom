@@ -44,10 +44,12 @@ function DisplayAllSneakers(response) {
     for (let sneaker in response) {
         output += `
             <div class="sneaker" data-id="${response[sneaker].id}">
-                <img src="${response[sneaker].imageUrl}" alt="${response[sneaker].brand} ${response[sneaker].model}" width="200">
-                <h3>${response[sneaker].model}</h3> 
-                <h4>${response[sneaker].brand}</h4>
-                <p>Price: $${response[sneaker].price}</p>
+                <a href="./single_product.html" target="_blank">
+                    <img src="${response[sneaker].imageUrl}" alt="${response[sneaker].brand} ${response[sneaker].model}" width="200">
+                    <h3>${response[sneaker].model}</h3> 
+                    <h4>${response[sneaker].brand}</h4>
+                    <p>Price: $${response[sneaker].price}</p>
+                </a>
             </div>
         `;
     }
@@ -56,6 +58,7 @@ function DisplayAllSneakers(response) {
 
 function DisplaySingleSneaker(response) {
     let sneakers = document.querySelectorAll('.sneaker');
+    window.location.href = '';
     
     sneakers.forEach(sneaker => {
         sneaker.addEventListener("click", () => {
@@ -73,7 +76,23 @@ function DisplaySingleSneaker(response) {
 
 
 function displaySneakerDetails(sneaker) {
-    console.log(sneaker);
+    const sneakerDetails = document.querySelector('.product-details');
+    let output = "";
+    
+    window.location.href = `single_product.html?id=${sneaker.id}`;
+    
+    output += `
+            <img src="${sneaker.imageUrl}" alt="${sneaker.brand} ${sneaker.model}" width="300">
+                <h2>${sneaker.model}</h2>
+                <h3>${sneaker.brand}</h3>
+                <p>Price: $${sneaker.price}</p>
+                <p>Colorway: ${sneaker.colorway}</p>
+                <p>Release Date: ${sneaker.releaseDate}</p>
+                <p>Size Range: ${sneaker.sizeRange}</p>
+                <p>Stock Quantity: ${sneaker.stockQuantity}</p>
+    `;
+
+    sneakerDetails.innerHTML = output;
 }
 
 
