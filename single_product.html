@@ -5,103 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sneaker Details</title>
     <style>
-        body {
-            margin: 0%;
-            padding: 0%;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
-        
-        header {
-            height: 100px;
-            width: 100vw;
-            display: flex;
-            justify-content: space-around;
-            background-color:#8d8d8d;
-            gap: 40vw;
-            position: fixed;
-            top: 0%;
-        }
-
-        nav {
-            width: 40%;
-            display: flex;
-            justify-content: space-around;
-        }
-        
-        ul {
-            width: 70%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-        } 
-        
-        li {
-            list-style: none;
-            margin-top: -50px;
-        }
-        
-        li a {
-            text-decoration: none;
-            color: black;
-            font-size: 1em;
-        }
-
-        main {
-            margin-top: 150px;
-        }
-
-        .product-details {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .product-details img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .product-details h2 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        .product-details h3 {
-            margin: 10px 0;
-            font-size: 1.2em;
-        }
-
-        .product-details p {
-            margin: 5px 0;
-        }
+        /* Your CSS styles here */
     </style>
 </head>
 <body>
     <header>
-        <h1>
-            Sneaker Shop
-        </h1>
-        <nav>
-            <ul>
-                <li>
-                    <a href="./index.html" target="_blank">Home</a>
-                </li>
-                <li>
-                    <a href="" target="_blank">Shop</a>
-                </li>
-                <li>
-                    <a href="" target="_blank">Cart</a>
-                </li>
-            </ul>
-        </nav>
+        <!-- Your header content here -->
     </header>
     <main>
+        <div class="product"></div>
         <div class="product-details">
-            
+            <img src="" alt="" width="300">
+            <h2></h2>
+            <h3></h3>
+            <p>Price: $</p>
+            <p>Colorway: </p>
+            <p>Release Date: </p>
+            <p>Size Range: </p>
+        </div>
+        <div>
+            <form id="addToCartForm">
+                <label for="quantityInput">Quantity:</label>
+                <input type="number" id="quantityInput" name="quantity" value="1" min="1">
+                <button type="submit">Add to Cart</button>
+            </form>
         </div>
     </main>
     <script src="main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sneakerId = urlParams.get('id');
+            
+            fetch(`./index.php?id=${sneakerId}`)
+                .then(response => response.json())
+                .then(sneaker => {
+                    const sneakerDetails = document.querySelector('.product-details');
+                    const output = `
+                        <img src="${sneaker.imageUrl}" alt="${sneaker.brand} ${sneaker.model}" width="300">
+                        <h2>${sneaker.model}</h2>
+                        <h3>${sneaker.brand}</h3>
+                        <p>Price: $${sneaker.price}</p>
+                        <p>Colorway: ${sneaker.colorway}</p>
+                        <p>Release Date: ${sneaker.releaseDate}</p>
+                        <p>Size Range: ${sneaker.sizeRange}</p>
+                    `;
+                    sneakerDetails.innerHTML = output;
+                })
+                .catch(error => console.error(error));
+            
+                const addToCartForm = document.querySelector('#addToCartForm');
+    
+            addToCartForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent form submission
+                
+                const quantityInput = document.querySelector('input[name="quantity"]');
+                const quantity = parseInt(quantityInput.value) || 1;
+                
+                const requestBody = `id=${sneakerId}&quantity=${quantity}`;
+                console.log(requestBody);
+                
+                if (sneakerId) {
+                    fetch(`./index.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: requestBody,
+                    })
+                    .then(response =>{
+                        console.log(response)
+                        return response.json()
+                    })
+                    .then(data => {
+                        console.log(data.message);
+                    })
+                    .catch(error => console.error(error));
+                } else {
+                    console.error("Sneaker ID not found.");
+                }
+            });
+        })
+    </script>
 </body>
 </html>
